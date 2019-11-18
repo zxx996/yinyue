@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+	<script>
+		function getReg(){
+			var $uname=phone.value;
+			var $upwd=upwd.value;
+			var $upwd1=upwd1.value;
+			var $phone=phone.value;
+			var $yzm=yzm.value;
+			var $sj=sjyzm.innerHTML;
+			var isC=0;
+			if(qq.checked==true){
+				isC=1;
+			}
+			if($upwd==$upwd1 && msg1.innerHTML=="当前手机号可用" && isC==1 && $yzm==$sj){
+				var xhr=new XMLHttpRequest();
+				xhr.onreadystatechange=function(){
+					if(xhr.readyState==4 && xhr.status==200){
+						var result=xhr.responseText;
+						if(result==1){
+							alert("注册成功");
+							location.href="http://127.0.0.1:8080/login.html";
+						}
+						else
+							alert("注册失败");
+					}
+				}
+
+			}else if(isC!=1){
+				alert("请同意《用户注册协议》");
+				return;
+			}else{
+				alert("不满足注册条件");
+				return;
+			}
+
+
+
+				
+			if(!$uname){
+				pe.innerHTML="手机号不能为空";
+				return;
+			}
+			if(!$upwd){
+				upd.innerHTML="密码不能为空";
+				return;
+			}
+			if(!yzm){
+				yz.innerHTML="验证码不能为空"
+			}
+
+			xhr.open("post","/user/api/v1/reg",true);
+			var formdata="uname="+$uname+"&upwd="+$upwd+"&phone="+$phone;
+			xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			xhr.send(formdata);
+
+		}
+
+		function checkUname(){
+			var nm=phone.value;
+
+			if(nm==""){
+				msg1.innerHTML="电话不能为空";
+				return;
+			}else if(nm.length!=11){
+				msg1.innerHTML="手机号长度错误";
+				return;
+			}
+
+
+
+			var $phone=phone.value;
+			var xhr=new XMLHttpRequest();
+			xhr.onreadystatechange=function(){
+				if(xhr.readyState==4&&xhr.status==200){
+					var result=xhr.responseText;
+					if(result==1){
+						msg1.innerHTML="当前手机号可用";
+					}else{
+						msg1.innerHTML="当前手机号不可用";
+					}
+				}
+			};
+			xhr.open("get","/user/api/v1/isReg/"+$phone,true);
+			xhr.send();
+		}
+
+
+		function upwd_show(){
+			var $upwd=upwd.value;
+			if($upwd=='')
+				msg2.innerHTML="密码不能为空";
+			else
+				msg2.innerHTML="";
+		}
+		function upwd1_show(){
+			var $upwd=upwd.value;
+			var $upwd1=upwd1.value;
+			if($upwd1!=$upwd)
+				msg3.innerHTML="密码不同";
+			else
+				msg3.innerHTML="";
+		}
+		function yz_show(){
+			var $yz=yzm.value;
+			var $sj=sjyzm.innerHTML;
+			if($yz!=$sj){
+				msg4.innerHTML="验证码不同";
+			}else
+				msg4.innerHTML="";
+		}
+		function getYzm(){
+			var yzm=parseInt(Math.random()*8999+1000);
+			sjyzm.innerHTML=yzm;
+		}
+	</script>
+
+</head>
+<body onload="getYzm()">
+	<div class="c1">
+		<div class="c2">
+			<img src="tupian/dac7499.png" alt="">
+			<ul class="sti">
+				<li><a href="body1.html">发现音乐</a></li>
+				<li><a href="body2.html">下载客户端</a></li>
+			</ul>
+		</div>
+		<div class="c3">
+			<input type="text" placeholder="搜索音乐/MV/歌单/歌手">
+			<a href="login.html">登录</a>
+			<span>|</span>
+			<a href="#">注册</a>
+		</div>
+	</div>
+	<!--上面是头-->
+    <div class="section">
+        <div></div>
+        <div id="hh">
+            <div>
+                <div class="mb-4 border-bottom" >
+					<div class="float-right" id="ig"><img src="image/img2018040401_ll.png" alt=""/></div>
+					手机注册
+				</div>
+								
+                <div class="f ">
+					<div class="hzm"><span id="msg1"></span></div>
+					<input type="text" id="phone" onblur="checkUname()"  placeholder="手机号" class="pl-3 iprd "/>
+				</div>
+								
+                <div class="f " >
+					<div class="hzm"><span id="msg2"></span></div>
+					<input type="password" id="upwd" onblur="upwd_show()"  placeholder="密码" class="pl-3 iprd"/>
+				</div>
+								
+                <div class="f ">
+					<div class="hzm"><span id="msg3"></span></div>
+					<input type="password" id="upwd1" onblur="upwd1_show()"  placeholder="确认密码" class="pl-3 iprd"/>
+				</div>
+
+				<div class="hzm"><span id="msg4"></span></div>
+                <div><input class="w-25" type="text" id="yzm" onblur="yz_show()"/><span id="sjyzm" onclick="getYzm()"></span><span id="kbq" onclick="getYzm()">&nbsp;&nbsp;&nbsp;&nbsp;看不清楚?换一张</span></div>
+                <div class="my-4"><button class="w-100 btn btn-primary" onclick="getReg()" >注册</button></div>
+                <div class="my-4">
+                    <input type="checkbox" id="qq"/><label for="qq">我已阅读并同意《用户注册协议》</label>
+                    <span id="aaa" class="float-right">已有账号？<a href="login.html">立即登录</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+		<div class="d1">
+		<div class="d2">
+			<div class="d3">
+				<p>下载酷我音乐客户端</p>
+				<ul>
+					<li>
+						<a href="#">
+							<img src="tupian/QQ截图20190826221427.png" alt="">
+							<h5>PC版</h5>
+						</a>
+					</li>
+					<li>
+						<img class="a1" src="tupian/QQ截图20190826223202.png" alt="">
+						<h5 class="a2">Android</h5>
+					</li>
+					<li>
+						<img class="a1" src="tupian/QQ截图20190826223213.png" alt="">
+						<h5 class="a2">iPhone版</h5>
+					</li>
+				</ul>
+			</div>
+			<div class="d4">
+				<p>协议声明</p>
+				<ul>
+					<li>
+						<p><a href="">用户服务协议</a></p>
+						<p><a href="">隐私政策</a></p>
+					</li>
+					<li>
+						<p><a href="">负责声明</a></p>
+						<p><a href="">权利声明</a></p>
+					</li>
+				</ul>
+			</div>
+			<div class="d5">
+				<p>其他</p>
+				<ul>
+					<li>
+						<p><a href="">联系我们</a></p>
+						<p><a href="">广告服务</a></p>
+					</li>
+					<li>
+						<p><a href="">腾讯音乐</a></p>
+						<p><a href="">未成年家长监护工程</a></p>
+					</li>
+					<li>
+						<p><a href="">诚聘英才</a></p>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="a3">
+
+		<p>
+			北京酷我科技有限公司版权所有 丨 网络文化经营许可证：<a href="">京网文[2015]0525-205号</a> | <a href="">信息网络传播视听节目许可证0109362号</a> 丨 增值电信业务经营许可证B2-20090418 丨 京ICP证060261号
+        </p>
+		<p>
+			<a href="">广播电视节目制作经营许可证京字第2037号</a> | <a href="">营业性演出许可证京市演1574</a> | <a href="">京公网安备11010502030216号</a> | 京ICP备09014827号
+		</p>
+		<p>
+			举报电话：010-87939949丨 举报邮箱：support@kuwo.cn
+		</p>
+	</div>
+</body>
+</html>
